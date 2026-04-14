@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Celestial | متجر الدفع الآمن</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #0288d1;
+            --accent: #00bcd4;
+            --bg: #f8fafc;
+            --white: #ffffff;
+            --shadow: 0 10px 40px rgba(0,0,0,0.08);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Vazirmatn', sans-serif;
+            background-color: var(--bg);
+            color: #334155;
+        }
+
+        /* Hero Section */
+        header {
+            background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+            padding: 80px 20px;
+            text-align: center;
+            clip-path: polygon(0 0, 100% 0, 100% 90%, 0% 100%);
+        }
+
+        header h1 { font-size: 60px; color: var(--primary); margin: 0; }
+        header p { font-size: 18px; color: #64748b; margin-top: 10px; }
+
+        /* Products Layout */
+        .products-grid {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            padding: 60px 20px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 20px;
+            width: 320px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .card:hover { transform: translateY(-10px); }
+
+        .price-box {
+            font-size: 30px;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 20px 0;
+        }
+
+        .buy-trigger {
+            background: var(--primary);
+            color: white;
+            padding: 14px 25px;
+            border-radius: 12px;
+            text-decoration: none;
+            display: block;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+            transition: 0.3s;
+        }
+
+        .buy-trigger:hover { background: var(--accent); }
+
+        /* --- Payment Modal (نافذة الدفع) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(5px);
+            display: none; /* مخفي افتراضياً */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-card {
+            background: white;
+            width: 90%;
+            max-width: 450px;
+            border-radius: 25px;
+            padding: 30px;
+            position: relative;
+            animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px; left: 20px;
+            font-size: 20px;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+
+        .modal-header { text-align: center; margin-bottom: 25px; }
+        .modal-header h2 { margin: 0; color: var(--primary); }
+
+        .order-summary {
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .payment-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .pay-option {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .pay-option:hover {
+            border-color: var(--primary);
+            background: #f0f9ff;
+        }
+
+        .pay-option i {
+            font-size: 24px;
+            width: 40px;
+            color: var(--primary);
+        }
+
+        .pay-option .text { flex-grow: 1; font-weight: bold; }
+
+        /* Footer */
+        footer { text-align: center; padding: 40px; color: #94a3b8; }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Celestial</h1>
+    <p>اختر السكربت المناسب وابدأ رحلة التميز الآن</p>
+</header>
+
+<section class="products-grid">
+    <!-- المنتج -->
+    <div class="card">
+        <div style="font-size: 40px; color: var(--accent);"><i class="fas fa-microchip"></i></div>
+        <h3>ساهر - FiveM</h3>
+        <p>نظام ساهر رادار العقرب بواجهة تتيح لك اختيار تفاصيل مميزه و مخالفات تصل للهاتف</p>
+        <div class="price-box">€19.99</div>
+        <!-- زر الشراء الذي يشغل النافذة -->
+        <button class="buy-trigger" onclick="openPayment('ساهر - FiveM', '19.99')">
+            <i class="fas fa-credit-card"></i> شراء الآن
+        </button>
+    </div>
+</section>
+
+<!-- نافذة الدفع (Modal) -->
+<div class="modal-overlay" id="paymentModal">
+    <div class="modal-card">
+        <i class="fas fa-times close-modal" onclick="closePayment()"></i>
+        
+        <div class="modal-header">
+            <h2>إتمام عملية الشراء</h2>
+            <p>اختر وسيلة الدفع المفضلة لديك</p>
+        </div>
+
+        <div class="order-summary">
+            <div>
+                <strong id="productName">اسم المنتج</strong><br>
+                <small style="color:#64748b">تسليم تلقائي فوري</small>
+            </div>
+            <div style="font-weight: 800; font-size: 20px; color: var(--primary);" id="productPrice">€0.00</div>
+        </div>
+
+        <div class="payment-methods">
+            <!-- استبدل الروابط # بروابط الدفع الحقيقية الخاصة بك من Stripe أو PayPal أو Tebex -->
+            <a href="https://paypal.me/yourname/19.99" target="_blank" class="pay-option">
+                <i class="fab fa-paypal"></i>
+                <div class="text">الدفع بواسطة PayPal</div>
+                <i class="fas fa-chevron-left" style="font-size: 12px; opacity: 0.5;"></i>
+            </a>
+
+            <a href="https://buy.stripe.com/your-link" target="_blank" class="pay-option">
+                <i class="fas fa-credit-card"></i>
+                <div class="text">بطاقة ائتمان / مدى (Stripe)</div>
+                <i class="fas fa-chevron-left" style="font-size: 12px; opacity: 0.5;"></i>
+            </a>
+
+            <div class="pay-option" onclick="alert('تواصل معنا عبر الديسكورد للدفع بالتحويل البنكي')">
+                <i class="fas fa-university"></i>
+                <div class="text">تحويل بنكي / أخرى</div>
+                <i class="fas fa-chevron-left" style="font-size: 12px; opacity: 0.5;"></i>
+            </div>
+        </div>
+
+        <p style="text-align: center; font-size: 12px; color: #94a3b8; margin-top: 20px;">
+            <i class="fas fa-lock"></i> تشفير آمن 256-بت لجميع المعاملات
+        </p>
+    </div>
+</div>
+
+<footer>
+    &copy; 2026 Celestial Store. جميع الحقوق محفوظة.
+</footer>
+
+<script>
+    function openPayment(name, price) {
+        document.getElementById('productName').innerText = name;
+        document.getElementById('productPrice').innerText = '€' + price;
+        document.getElementById('paymentModal').style.display = 'flex';
+    }
+
+    function closePayment() {
+        document.getElementById('paymentModal').style.display = 'none';
+    }
+
+    // إغلاق النافذة عند الضغط خارجها
+    window.onclick = function(event) {
+        let modal = document.getElementById('paymentModal');
+        if (event.target == modal) {
+            closePayment();
+        }
+    }
+</script>
+
+</body>
+</html>
